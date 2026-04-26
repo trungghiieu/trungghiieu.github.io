@@ -38,6 +38,88 @@
             transform: translateY(-5px);
         }
 
+        /* Hiệu ứng thanh điều hướng Active */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            color: #475569;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link.active {
+            color: #2563eb !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #2563eb;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Dropdown Styles Sync */
+        .dropdown { position: relative; }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 20px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 220px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.2, 1);
+            border-top: 4px solid #2563eb;
+            z-index: 50;
+        }
+
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent #2563eb transparent;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-item:last-child { border-bottom: none; }
+
+        .dropdown-item:hover {
+            background-color: #f8fafc;
+            color: #2563eb;
+            padding-left: 25px;
+        }
+
         /* Mouse Follow Glow */
         .mouse-blob {
             position: fixed;
@@ -152,13 +234,32 @@
         .avatar-circle { width: 44px; height: 44px; background: #2563eb; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; position: relative; }
         .online-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #10b981; border: 2px solid white; border-radius: 50%; }
 
+        /* --- Zalo Floating Button New Styles --- */
         .zalo-floating-btn {
-            position: fixed; bottom: 24px; right: 24px; z-index: 150; width: 60px; height: 60px;
-            background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.35); transition: all 0.4s; cursor: pointer;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 150;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
-        .zalo-floating-btn:hover { transform: scale(1.1) rotate(10deg); background: #1d4ed8; }
-        .zalo-text-icon { color: white; font-weight: 900; font-size: 13px; font-family: sans-serif; }
+        
+        .zalo-floating-btn:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .zalo-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 15px rgba(37, 99, 235, 0.3));
+        }
+        /* --- End Zalo Styles --- */
     </style>
 </head>
 <body class="selection:bg-blue-100 overflow-x-hidden">
@@ -178,14 +279,28 @@
                 </div>
             </div>
             
-            <div class="hidden lg:flex items-center space-x-8 font-bold text-[15px]">
-                <a href="#" class="text-slate-600 hover:text-blue-600 transition">TRANG CHỦ</a>
-                <a href="#services" class="text-slate-600 hover:text-blue-600 transition">DỊCH VỤ</a>
-                <a href="#payment" class="text-slate-600 hover:text-blue-600 transition">THANH TOÁN</a>
-                <a href="#advantages" class="text-slate-600 hover:text-blue-600 transition">ƯU ĐIỂM</a>
-                <a href="#about" class="text-slate-600 hover:text-blue-600 transition">CAM KẾT</a>
-                <a href="#articles" class="text-slate-600 hover:text-blue-600 transition">BÀI VIẾT</a>
-                <button onclick="makeCall()" class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold hover:bg-blue-600 transition-all text-[15px] ml-2 shadow-sm">Báo giá ngay</button>
+            <div id="nav-links-container" class="hidden lg:flex items-center space-x-8 font-bold text-[15px]">
+                <a href="#home" class="nav-link active hover:text-blue-600 transition">TRANG CHỦ</a>
+                <a href="#services" class="nav-link hover:text-blue-600 transition">DỊCH VỤ</a>
+                <a href="#payment" class="nav-link hover:text-blue-600 transition">THANH TOÁN</a>
+                <a href="#advantages" class="nav-link hover:text-blue-600 transition">ƯU ĐIỂM</a>
+                <a href="#commit" class="nav-link hover:text-blue-600 transition">CAM KẾT</a>
+                
+                <!-- Dropdown Item -->
+                <div class="dropdown">
+                    <a href="#articles" class="nav-link hover:text-blue-600 transition">
+                        BÀI VIẾT <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1.5 opacity-60"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">Hướng dẫn</a>
+                        <a href="#" class="dropdown-item">Thủ thuật</a>
+                        <a href="#" class="dropdown-item">Ghost Windows 11</a>
+                        <a href="/bai-viet/ultra/ultraview.html" class="dropdown-item">Hướng dẫn UltraViewer</a>
+                        <a href="#" class="dropdown-item">Thủ thuật máy tính</a>
+                        <a href="#" class="dropdown-item">Phần mềm văn phòng</a>
+                    </div>
+                </div>
+                <a href="#about" class="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold hover:bg-slate-900 transition-all text-[15px] uppercase tracking-wider shadow-lg shadow-blue-100">GIỚI THIỆU</a>
             </div>
 
             <button class="lg:hidden p-2 text-slate-900" id="menu-toggle">
@@ -195,18 +310,33 @@
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="fixed inset-0 z-[200] bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 transition-all duration-300 opacity-0 pointer-events-none">
+    <div id="mobile-menu" class="fixed inset-0 z-[200] bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 transition-all duration-300 opacity-0 pointer-events-none overflow-y-auto py-20">
         <button class="absolute top-6 right-6 p-2 text-slate-900" id="menu-close"><i data-lucide="x" class="w-8 h-8"></i></button>
-        <a href="#" class="text-2xl font-bold mobile-link">Trang chủ</a>
-        <a href="#services" class="text-2xl font-bold mobile-link">Dịch vụ</a>
-        <a href="#payment" class="text-2xl font-bold mobile-link">Thanh toán</a>
-        <a href="#advantages" class="text-2xl font-bold mobile-link">Ưu điểm</a>
-        <a href="#about" class="text-2xl font-bold mobile-link">Uy tín</a>
-        <a href="#articles" class="text-2xl font-bold mobile-link">Bài viết</a>
+        <a href="#home" class="text-2xl font-bold mobile-link">TRANG CHỦ</a>
+        <a href="#services" class="text-2xl font-bold mobile-link">DỊCH VỤ</a>
+        <a href="#payment" class="text-2xl font-bold mobile-link">THANH TOÁN</a>
+        <a href="#advantages" class="text-2xl font-bold mobile-link">ƯU ĐIỂM</a>
+        <a href="#commit" class="text-2xl font-bold mobile-link">CAM KẾT</a>
+        
+        <!-- Accordion Section for Articles in Mobile -->
+        <div class="flex flex-col items-center w-full">
+            <button id="mobile-articles-btn" class="text-2xl font-bold flex items-center gap-2 focus:outline-none">
+                BÀI VIẾT 
+                <i data-lucide="chevron-down" id="mobile-articles-icon" class="w-6 h-6 transition-transform duration-300"></i>
+            </button>
+            <div id="mobile-articles-sub" class="flex flex-col items-center space-y-4 overflow-hidden max-h-0 transition-all duration-500 opacity-0 mt-4">
+                <a href="#" class="text-lg font-bold mobile-link opacity-70">• Ghost Windows</a>
+                <a href="#" class="text-lg font-bold mobile-link opacity-70">• Phần mềm</a>
+                <a href="#" class="text-lg font-bold mobile-link opacity-70">• Thủ thuật</a>
+                <a href="/bai-viet/ultra/ultraview.html" class="text-lg font-bold mobile-link opacity-70">• Hướng dẫn UltraViewer</a>
+            </div>
+        </div>
+
+        <a href="#about" class="text-2xl font-bold mobile-link">GIỚI THIỆU</a>
     </div>
 
     <!-- Hero Section -->
-    <section class="hero-section min-h-[75vh] flex items-center pt-32 pb-20 md:pt-44 md:pb-28 px-5">
+    <section id="home" class="hero-section min-h-[75vh] flex items-center pt-32 pb-20 md:pt-44 md:pb-28 px-5">
         <div class="hero-bg-image-wrapper"></div>
         <div class="hero-overlay"></div>
         
@@ -217,7 +347,7 @@
             </div>
             
             <div class="mb-4">
-                <span class="navy-text text-xl md:text-2xl font-black opacity-80 tracking-widest">DỊCH VỤ</span>
+                <span class="navy-text text-3xl md:text-5xl font-black opacity-80 tracking-widest">DỊCH VỤ</span>
             </div>
             
             <h1 class="heading-font text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] font-black leading-[1.2] tracking-tight mb-8 max-w-4xl mx-auto">
@@ -225,12 +355,12 @@
             </h1>
 
             <p class="text-sm md:text-base text-slate-500 mb-10 max-w-2xl leading-relaxed font-medium reveal active" style="transition-delay: 100ms;">
-                Chúng tôi thấu hiểu cảm giác bất lực khi công việc của bạn bị gián đoạn do lỗi kỹ thuật. Với kinh nghiệm dày dặn, <span class="navy-text font-bold">Kỹ thuật viên Phạm Trung Hiếu</span> sẽ giúp bạn xử lý triệt để mọi vấn đề nhanh chóng thông qua Ultraviewer.
+                Chúng tôi thấu hiểu cảm giác bất lực khi công việc của bạn bị gián đoạn do lỗi máy tính. Với kinh nghiệm dày dặn, <span class="navy-text font-bold">Kỹ thuật viên Phạm Trung Hiếu</span> sẽ giúp bạn xử lý triệt để mọi vấn đề nhanh chóng từ xa.
             </p>
 
             <div class="flex flex-wrap justify-center gap-4 reveal active" style="transition-delay: 200ms;">
-                <button onclick="makeCall()" class="px-7 py-3.5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg hover:bg-slate-900 transition-all text-xs">Gọi tư vấn ngay</button>
-                <button onclick="contactZalo('Hero Chat')" class="px-7 py-3.5 glass-card text-slate-700 rounded-2xl font-bold hover:bg-white transition-all text-xs">Nhắn tin Zalo</button>
+                <button onclick="makeCall()" class="px-7 py-3.5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg hover:bg-slate-900 transition-all text-sm md:text-base">Gọi tư vấn ngay</button>
+                <button onclick="contactZalo('Hero Chat')" class="px-7 py-3.5 glass-card text-slate-700 rounded-2xl font-bold hover:bg-white transition-all text-sm md:text-base">Nhắn tin Zalo</button>
             </div>
         </div>
     </section>
@@ -245,7 +375,7 @@
                 <h3 class="navy-text text-base md:text-xl font-extrabold mt-3 border-l-4 border-blue-600 pl-4">
                     Giải pháp cứu hộ máy tính từ xa toàn diện
                 </h3>
-                <p class="text-slate-400 font-medium italic mt-5 text-xs md:text-sm">"Kỹ thuật tận tâm, nâng tầm trải nghiệm."</p>
+                <p class="text-slate-400 font-medium italic mt-5 text-base md:text-lg">"Phục vụ tận tâm, nâng tầm trải nghiệm."</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="services-grid">
@@ -262,37 +392,53 @@
                     <i data-lucide="shield-check" class="w-3 h-3"></i>
                     <span>CHỈ GIAO DỊCH VỚI 1 STK DUY NHẤT</span>
                 </div>
-                <h2 class="heading-font text-2xl md:text-4xl text-white font-black tracking-tight mb-6">UY TÍN TRAO ĐI, NIỀM TIN Ở LẠI</h2>
+                <h2 class="heading-font text-2xl md:text-4xl text-white font-black tracking-tight mb-6">UY TÍN TẠO NIỀM TIN</h2>
                 <p class="text-slate-400 text-sm md:text-base max-w-xl leading-relaxed mb-8">
-                    Tại Trung Hiểu Computer, chúng tôi cam kết chỉ thu phí khi sự cổ được khắc phục triệt để.
+                    Tại Trung Hieu Computer, tôi cam kết chỉ thu phí khi sự cố được khắc phục triệt để.
                 </p>
                 <div class="flex flex-wrap justify-center lg:justify-start gap-5 text-emerald-400 font-bold text-[12px] tracking-widest">
                     <div class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-4 h-4"></i><span>Xử lý 24/7</span></div>
-                    <div class="flex items-center space-x-2 text-blue-400"><i data-lucide="zap" class="w-4 h-4"></i><span>Không phát sinh thêm chi phí</span></div>
+                    <div class="flex items-center space-x-2 text-blue-400"><i data-lucide="zap" class="w-4 h-4"></i><span>Minh bạch mọi chi phí</span></div>
                 </div>
             </div>
 
-            <div class="bank-card rounded-[3rem] w-full max-w-md p-9 text-white shadow-2xl relative reveal">
+            <!-- PAYMENT CARD CONFIGURED FOR MB BANK - PHAM TRUNG HIEU -->
+            <div class="bank-card rounded-[3rem] w-full max-w-2xl p-6 md:p-9 text-white shadow-2xl relative reveal">
                 <div class="bank-pattern"></div>
-                <div class="relative z-10 text-left">
-                    <div class="flex justify-between items-start mb-10">
-                        <div>
-                            <h4 class="text-[9px] font-black uppercase tracking-[0.3em] opacity-80 mb-1">Cổng thanh toán</h4>
-                            <div class="text-2xl font-black italic tracking-tighter">MB BANK</div>
+                <div class="relative z-10 flex flex-col sm:flex-row items-center gap-8 text-left">
+                    <!-- QR Code Side -->
+                    <div class="bg-white p-3 rounded-3xl shadow-2xl flex-shrink-0 group relative overflow-hidden">
+                        <!-- VietQR API Link for MB BANK (970422) - 1056686686 - PHAM TRUNG HIEU -->
+                        <img src="https://api.vietqr.io/image/970422-1056686686-qr_only.jpg?accountName=PHAM%20TRUNG%20HIEU&amount=0&addInfo=Sua%20chua%20may%20tinh%20online" 
+                             alt="QR Thanh Toán MB Bank" class="w-44 h-44 object-contain">
+                        <div class="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i data-lucide="scan-line" class="text-blue-600 w-10 h-10 animate-pulse"></i>
                         </div>
-                        <div class="w-12 h-12 bg-white/20 rounded-2xl backdrop-blur flex items-center justify-center"><i data-lucide="credit-card" class="w-6 h-6"></i></div>
                     </div>
-                    <div class="space-y-7">
-                        <div>
-                            <span class="text-[9px] font-bold opacity-70 tracking-widest block mb-2">Số tài khoản (Click để sao chép)</span>
-                            <div onclick="copyText('1056686686')" class="flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-2xl cursor-pointer border border-white/10 transition-all active:scale-95">
-                                <span class="text-2xl font-black tracking-[0.1em]">105.668.6686</span>
-                                <i data-lucide="copy" class="w-4 h-4 opacity-50"></i>
+                    
+                    <!-- Bank Info Side -->
+                    <div class="flex-grow w-full">
+                        <div class="flex justify-between items-start mb-8">
+                            <div>
+                                <h4 class="text-[12px] font-bold opacity-70 tracking-widest block mb-2 uppercase text-blue-50">CHUYỂN KHOẢN NGÂN HÀNG</h4>
+                                <div class="text-xl font-black tracking-tighter text-white">MB - Ngân hàng Quân Đội</div>
+                            </div>
+                            <div class="w-12 h-12 bg-white/20 rounded-2xl backdrop-blur flex items-center justify-center border border-white/20 shadow-xl shadow-blue-900/40">
+                                <i data-lucide="credit-card" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div>
-                            <span class="text-[9px] font-bold opacity-70 tracking-widest block mb-0.5">Chủ tài khoản</span>
-                            <div class="text-lg font-black tracking-widest">PHAM TRUNG HIEU</div>
+                        <div class="space-y-6">
+                            <div>
+                                <span class="text-[12px] font-bold opacity-70 tracking-widest block mb-2 uppercase text-blue-50">Số tài khoản (Click để sao chép)</span>
+                                <div onclick="copyText('1056686686')" class="flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-2xl cursor-pointer border border-white/10 transition-all active:scale-95 group/copy ring-offset-slate-900 focus:ring-2 ring-blue-400">
+                                    <span class="text-2xl font-black tracking-[0.1em] text-white">105.668.6686</span>
+                                    <i data-lucide="copy" class="w-5 h-5 opacity-50 group-hover/copy:opacity-100 transition-opacity"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-[12px] font-bold opacity-70 tracking-widest block mb-1 uppercase text-blue-50">Chủ tài khoản</span>
+                                <div class="text-xl font-black tracking-widest uppercase text-white">PHAM TRUNG HIEU</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -313,37 +459,36 @@
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-blue-50 text-blue-600 animate-float"><i data-lucide="clock" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-3 relative z-10">Tiết kiệm thời gian</h4>
-                    <p class="text-[12px] text-slate-500 font-medium leading-relaxed italic relative z-10">Kết nối ngay sau 15 phút liên hệ.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Kết nối ngay sau 15 phút liên hệ.</p>
                 </div>
                 <div class="p-7 rounded-[2rem] glass-card hover-glass group reveal flex flex-col items-center md:items-start relative overflow-hidden" style="transition-delay: 50ms;">
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-emerald-50 text-emerald-600 animate-float"><i data-lucide="map-pin" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-3 relative z-10">Tiện lợi, linh hoạt</h4>
-                    <p class="text-[12px] text-slate-500 font-medium leading-relaxed italic relative z-10">Sửa chữa ở bất cứ đâu bạn muốn.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Sửa chữa ở bất cứ đâu bạn muốn.</p>
                 </div>
-                <!-- Sửa thành icon Zap (Tia sét) -->
                 <div class="p-7 rounded-[2rem] glass-card hover-glass group reveal flex flex-col items-center md:items-start relative overflow-hidden" style="transition-delay: 100ms;">
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-amber-50 text-amber-600 animate-float"><i data-lucide="zap" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-3 relative z-10">Hỗ trợ nhanh chóng</h4>
-                    <p class="text-[12px] text-slate-500 font-medium leading-relaxed italic relative z-10">Xử lý sự cố 24/7 xuyên suốt.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Xử lý sự cố 24/7 xuyên suốt.</p>
                 </div>
                 <div class="p-7 rounded-[2rem] glass-card hover-glass group reveal flex flex-col items-center md:items-start relative overflow-hidden" style="transition-delay: 150ms;">
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-orange-50 text-orange-600 animate-float"><i data-lucide="trending-down" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-3 relative z-10">Chi phí thấp hơn</h4>
-                    <p class="text-[12px] text-slate-500 font-medium leading-relaxed italic relative z-10">Tiết kiệm đáng kể chi phí dịch vụ.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Tiết kiệm đáng kể chi phí dịch vụ.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Commitment Section -->
-    <section id="about" class="py-16 md:py-24 px-5 bg-slate-50">
+    <section id="commit" class="py-16 md:py-24 px-5 bg-slate-50">
         <div class="max-w-6xl mx-auto text-center md:text-left">
             <div class="mb-16 reveal">
                 <h2 class="heading-font text-2xl md:text-4xl font-black impressive-title">CAM KẾT CHẤT LƯỢNG</h2>
-                <h3 class="navy-text text-lg md:text-xl font-bold mt-3 border-l-4 border-indigo-600 pl-4">Sự an tâm tuyệt đối cho mọi khách hàng</h3>
+                <h3 class="navy-text text-lg md:text-xl font-bold mt-3 border-l-4 border-indigo-600 pl-4">Tạo sự an tâm tuyệt đối cho mọi khách hàng</h3>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -351,25 +496,25 @@
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-blue-50 text-blue-600 shadow-sm"><i data-lucide="search" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-2 relative z-10">Chẩn đoán chính xác</h4>
-                    <p class="text-[11px] text-slate-600 font-bold leading-relaxed italic relative z-10">Cam kết tìm đúng nguyên nhân, xử lý triệt để vấn đề.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Cam kết tìm đúng nguyên nhân, xử lý triệt để vấn đề.</p>
                 </div>
                 <div class="p-7 rounded-[2.5rem] glass-card hover-glass group reveal flex flex-col items-center md:items-start relative overflow-hidden" style="transition-delay: 50ms;">
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-emerald-50 text-emerald-600 shadow-sm"><i data-lucide="eye" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-2 relative z-10">Giám sát trực tiếp</h4>
-                    <p class="text-[11px] text-slate-600 font-bold leading-relaxed italic relative z-10">Khách hàng có thể theo dõi toàn bộ quy trình xử lý qua Ultraview/Teamview.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Khách hàng có thể theo dõi toàn bộ quy trình xử lý.</p>
                 </div>
                 <div class="p-7 rounded-[2.5rem] glass-card hover-glass group reveal flex flex-col items-center md:items-start relative overflow-hidden" style="transition-delay: 100ms;">
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-indigo-50 text-indigo-600 shadow-sm"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-2 relative z-10">Bảo mật dữ liệu</h4>
-                    <p class="text-[11px] text-slate-600 font-bold leading-relaxed italic relative z-10">Cam kết bảo mật tuyệt đối, không xâm phạm dữ liệu của khách hàng.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Cam kết bảo mật tuyệt đối, không tuỳ tiện xâm phạm dữ liệu của khách hàng.</p>
                 </div>
                 <div class="p-7 rounded-[2.5rem] glass-card hover-glass group reveal flex flex-col items-center md:items-start relative overflow-hidden" style="transition-delay: 150ms;">
                     <div class="spotlight"></div>
                     <div class="soft-icon-box bg-purple-50 text-purple-600 shadow-sm"><i data-lucide="wallet" class="w-7 h-7"></i></div>
                     <h4 class="font-black text-slate-900 text-base mb-2 relative z-10">Thanh toán khi hoàn thành</h4>
-                    <p class="text-[11px] text-slate-600 font-bold leading-relaxed italic relative z-10">Chỉ thu phí sau khi sự cố đã được khắc phục hoàn toàn.</p>
+                    <p class="text-[13px] text-slate-500 font-medium leading-relaxed italic relative z-10">Chỉ thu phí sau khi sự cố đã được khắc phục hoàn toàn.</p>
                 </div>
             </div>
         </div>
@@ -380,23 +525,156 @@
         <div class="max-w-6xl mx-auto text-center md:text-left">
             <div class="mb-16 reveal">
                 <h2 class="heading-font text-2xl md:text-4xl font-black impressive-title">BÀI VIẾT</h2>
-                <h3 class="navy-text text-base md:text-xl lg:text-2xl font-bold mt-3 border-l-4 border-blue-500 pl-4">Kinh nghiệm & thủ thuật hữu ích</h3>
+                <h3 class="navy-text text-lg md:text-xl font-bold mt-3 border-l-4 border-indigo-600 pl-4">Kinh nghiệm & thủ thuật hữu ích</h3>            
             </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                <!-- Article 1 -->
                 <div class="group reveal glass-card hover-glass rounded-[2rem] overflow-hidden flex flex-col h-full relative">
-                    <a href="/bai-viet/ultraview.html" class="absolute inset-0 z-50"></a>
+                    <a href="/bai-viet/ultra/ultraview.html" class="absolute inset-0 z-50"></a>
                     <div class="spotlight"></div>
-                    <img src="/img/bia_ultra.jpg" class="h-40 w-full object-cover transition-transform group-hover:scale-110">
+                    <img src="/bai-viet/ultra/bia_ultra.jpg" class="h-40 w-full object-cover transition-transform group-hover:scale-110">
                     <div class="p-6 relative z-10">
-                        <span class="text-[11px] font-black text-blue-600 uppercase mb-2 block tracking-widest">Hướng dẫn</span>
-                        <h4 class="font-bold text-slate-900 mb-2">Hướng dẫn cài đặt Ultraviewer</h4>
-                        <p class="text-[12px] text-slate-500 italic leading-relaxed">UltraViewer là phần mềm điều khiển máy tính từ xa...</p>
+                        <div class="flex items-center space-x-2 text-blue-600 font-black text-[12px] uppercase tracking-widest mb-4">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                            <span>Hướng dẫn</span>
+                        </div>                      
+                        <div class="flex items-center gap-1.5 text-slate-500 font-bold text-[12px] uppercase tracking-wider mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-blue-500 shrink-0"></i>                           
+                            <span>21/04/2026</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-2">Hướng dẫn cài đặt Ultraviewer</h4>
+                        <p class="text-[13px] text-slate-500 italic leading-relaxed">UltraViewer là phần mềm điều khiển máy tính từ xa uy tín nhất hiện nay...</p>
                     </div>
                 </div>
+
+                <!-- Article 2 -->
+                <div class="group reveal glass-card hover-glass rounded-[2rem] overflow-hidden flex flex-col h-full relative" style="transition-delay: 50ms;">
+                    <a href="bai-viet/fast-startup/fast-startup.html" class="absolute inset-0 z-50"></a>
+                    <div class="spotlight"></div>
+                    <img src="/bai-viet/fast-startup/bia-fast-startup.png" class="h-40 w-full object-cover transition-transform group-hover:scale-110">
+                    <div class="p-6 relative z-10">
+                        <div class="flex items-center space-x-2 text-blue-600 font-black text-[12px] uppercase tracking-widest mb-4">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                            <span>Tối ưu hệ thống</span>
+                        </div>                     
+                        <div class="flex items-center gap-1.5 text-slate-500 font-bold text-[12px] uppercase tracking-wider mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-blue-500 shrink-0"></i>                           
+                            <span>26/04/2026</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-2">Khắc phục hao pin do Fast Startup</h4>
+                        <p class="text-[13px] text-slate-500 italic leading-relaxed">Fast Startup (Khởi động nhanh) là tính năng mặc định có từ Windows 8 trở lên...</p>
+                    </div>
+                </div>
+
+                <!-- Article 3 -->
+                <div class="group reveal glass-card hover-glass rounded-[2rem] overflow-hidden flex flex-col h-full relative" style="transition-delay: 100ms;">
+                    <a href="/bai-viet/mua-laptop-cu/mua-laptop-cu.html" class="absolute inset-0 z-50"></a>
+                    <div class="spotlight"></div>
+                    <img src="/bai-viet/mua-laptop-cu/laptop-cu.webp" class="h-40 w-full object-cover transition-transform group-hover:scale-110">
+                    <div class="p-6 relative z-10">
+                        <div class="flex items-center space-x-2 text-blue-600 font-black text-[12px] uppercase tracking-widest mb-4">
+                            <i data-lucide="bookmark" class="w-4 h-4"></i>
+                            <span>Kinh nghiệm</span>
+                        </div>                    
+                        <div class="flex items-center gap-1.5 text-slate-500 font-bold text-[12px] uppercase tracking-wider mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-blue-500 shrink-0"></i>                           
+                            <span>26/04/2026</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 mb-2">Bí kíp kiểm tra khi mua Laptop cũ</h4>
+                        <p class="text-[13px] text-slate-500 italic leading-relaxed">Hãy cảnh giác nếu máy tính của bạn xuất hiện các dấu hiệu lạ sau đây...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút Xem tất cả bài viết màu cam -->
+            <div class="mt-12 flex justify-center reveal">
+                <a href="#" class="px-10 py-4 bg-orange-500 text-white rounded-2xl font-black shadow-lg shadow-orange-200 hover:bg-orange-600 hover:-translate-y-1 transition-all text-xs uppercase tracking-widest flex items-center gap-3 group">
+                    Xem tất cả bài viết
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- About Section - UPDATED ALIGNMENT -->
+    <section id="about" class="py-16 md:py-28 px-5 bg-white relative overflow-hidden">
+        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
+            
+            <!-- Left Side: Intro Text -->
+            <div class="w-full lg:w-1/2 reveal">
+                <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[14px] font-bold mb-6 tracking-widest uppercase">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span class="leading-none">GIỚI THIỆU</span>
+                </div>
+                <div class="space-y-2 text-slate-600 text-sm md:text-base leading-relaxed font-medium">
+                    <p>
+                        Chào mọi người! Tôi là <span class="text-blue-600 font-bold">Phạm Trung Hiếu</span> - admin của Website, được thành lập vào ngày <span class="text-blue-600 font-bold">21/04/2026</span>.
+                    </p>
+                    <p>
+                        Là một người trẻ có niềm đam mê mãnh liệt về CNTT. Trong quá trình <span class="text-blue-600 font-bold">hơn 5 năm kinh nghiệm</span> sửa máy tính của mình, tôi đã tích luỹ, đúc kết kinh nghiệm và xử lý rất nhiều lỗi phức tạp cho mọi người một cách nhanh chóng và hiệu quả.
+                    </p>
+                </div>
+
+                <!-- Web Goals Section (UPDATED FROM IMAGE) -->
+                <div class="mt-6">
+                    <h3 class="navy-text text-lg md:text-xl font-bold mt-3">Mục đích của Website</h3>
+                    <p>
+                        Tôi cho rằng trong thời đại công nghệ số, việc phải mang máy tính đi sửa chữa trực tiếp vừa tốn thời gian lại tiềm ẩn nhiều rủi ro về linh kiện và dữ liệu. Xuất phát từ khao khát hỗ trợ mọi người khắc phục vấn đề về máy tính mà không cần phải đi xa, tôi phát triển Website này nhằm mục đích cung cấp giải pháp <span class="text-blue-600 font-bold">Sửa chữa Máy tính Online</span> với phương châm <span class="text-blue-600 font-bold">Nhanh chóng – An toàn – Hiệu quả</span>.
+                    </p>
+                    <p>
+                        Mọi thao tác kỹ thuật đều được thực hiện <span class="navy-text font-bold">minh bạch dưới sự giám sát trực tiếp</span> của khách hàng qua màn hình. Tôi cam kết bảo mật tuyệt đối dữ liệu và chỉ nhận phí khi vấn đề đã được khắc phục hoàn toàn.
+                    </p>                    
+                </div>
+            </div>
+
+            <!-- Right Side: Contact Details - LOWERED FOR ALIGNMENT -->
+            <div class="w-full lg:w-1/2 relative reveal lg:mt-12">
+                <div class="glass-card p-8 md:p-10 rounded-[3rem] shadow-2xl relative z-10 border-blue-100">
+                    <h3 class="navy-text text-lg md:text-xl font-bold mt-3 flex items-center gap-2">
+                        <i data-lucide="contact" class="text-blue-600 w-5 h-5 md:w-6 md:h-6"></i> 
+                        <span>Thông tin liên hệ</span>
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Inbox Item Updated with Email Icon -->
+                        <a href="https://www.gmail.com" target="_blank" class="flex items-center p-4 rounded-2xl hover:bg-blue-50 transition-all border border-transparent hover:border-blue-100 group">
+                            <div class="w-14 h-14 bg-blue-100/50 rounded-full flex items-center justify-center mr-5 group-hover:scale-105 transition-transform">
+                                <i data-lucide="mail" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-0.5">Gmail</div>
+                                <div class="text-lg font-bold text-[#1e293b]">hieumedia368@gmail.com</div>
+                            </div>
+                        </a>
+
+                        <div onclick="makeCall()" class="flex items-center p-4 rounded-2xl hover:bg-emerald-50 transition-all border border-transparent hover:border-emerald-100 group cursor-pointer">
+                            <div class="w-14 h-14 bg-emerald-100/50 text-emerald-600 rounded-full flex items-center justify-center mr-5 group-hover:scale-105 transition-transform">
+                                <i data-lucide="phone-call" class="w-6 h-6"></i>
+                            </div>
+                            <div class="cursor-pointer" onclick="makeCall()">
+                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-0.5">ZALO / SĐT</div>
+                                <div class="text-lg font-bold text-[#1e293b] hover:text-blue-600 transition-all">
+                                    0914.384.739
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-4 rounded-2xl bg-slate-50/50 border border-slate-100">
+                            <div class="w-14 h-14 bg-white text-slate-900 rounded-full flex items-center justify-center mr-5 shadow-sm">
+                                <i data-lucide="map-pin" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-0.5">Phạm vi hoạt động</div>
+                                <div class="text-lg font-bold text-[#1e293b]">ONLINE TOÀN QUỐC</div>
+                            </div>
+                        </div>
+                    </div>               
+                <!-- Decorative Element -->
+                <div class="absolute -bottom-10 -right-6 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl -z-10"></div>
+            </div>
+        </div>
+    </section>
     <!-- Footer -->
     <footer id="contact" class="bg-[#0b1120] text-white pt-16 pb-24 px-5">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 text-center md:text-left">
@@ -446,9 +724,12 @@
         </div>
     </div>
 
-    <div onclick="contactZalo('Floating')" class="zalo-floating-btn group"><span class="zalo-text-icon">Zalo</span><div class="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-10 -z-10"></div></div>
+    <!-- Nút Zalo Floating mới sử dụng hình ảnh -->
+    <div onclick="contactZalo()" class="zalo-floating-btn group">
+        <img src="/img/Icon_of_Zalo.png" alt="Zalo Contact" class="zalo-icon-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg'">
+        <div class="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-20 -z-10 scale-150"></div>
+    </div>
 
-    <div id="copy-alert" class="fixed top-8 left-1/2 -translate-x-1/2 z-[300] bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-2xl transition-all opacity-0 translate-y-[-20px] pointer-events-none">Đã sao chép số tài khoản!</div>
     
     <script>
         const myZaloPhone = "0914384739"; 
@@ -465,31 +746,23 @@
         `;
 
         function makeCall() { window.location.href = `tel:${myPhone}`; }
-        function contactZalo(context) {
-        // Nội dung sẽ được tự động copy vào máy khách hàng
-        const message = `Chào Hiếu, mình đang quan tâm đến: ${context}. Tư vấn giúp mình nhé!`;
         
-        // Thực hiện copy vào bộ nhớ đệm (Clipboard)
-        navigator.clipboard.writeText(message).then(() => {
-            // Hiển thị thông báo hướng dẫn khách hàng
-            const alertBox = document.getElementById('copy-alert');
-            alertBox.textContent = "Đã soạn sẵn lời nhắn!";
-            alertBox.style.opacity = '1'; 
-            alertBox.style.translate = '0 12px';
-            
-            // Chờ 1.2 giây để khách kịp đọc thông báo rồi mới chuyển sang Zalo
-            setTimeout(() => {
-                alertBox.style.opacity = '0';
-                window.open(`https://zalo.me/${myZaloPhone}`, '_blank');
-            }, 1200);
-        }).catch(() => {
-            // Nếu trình duyệt không hỗ trợ copy, vẫn mở Zalo để không mất khách
+        function contactZalo() {
             window.open(`https://zalo.me/${myZaloPhone}`, '_blank');
-        });
         }
+
         function copyText(text) {
-            const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            const alertBox = document.getElementById('copy-alert'); alertBox.style.opacity = '1'; alertBox.style.translate = '0 10px';
+            const el = document.createElement('textarea'); 
+            el.value = text; 
+            document.body.appendChild(el); 
+            el.select(); 
+            document.execCommand('copy'); 
+            document.body.removeChild(el);
+            
+            const alertBox = document.getElementById('copy-alert'); 
+            alertBox.textContent = "Đã sao chép số tài khoản!";
+            alertBox.style.opacity = '1'; 
+            alertBox.style.translate = '0 10px';
             setTimeout(() => { alertBox.style.opacity = '0'; alertBox.style.translate = '0 -20px'; }, 2500);
         }
 
@@ -498,7 +771,7 @@
             { title: "Cài đặt Phần mềm theo yêu cầu", price: "50k - 100k", desc: "Hỗ trợ cài đặt trọn bộ: Office, Adobe, AutoCAD, Revit, SketchUp, phần mềm kỹ thuật... Hỗ trợ kích hoạt vĩnh viễn nhanh chóng.", icon: "box", color: "from-purple-600 to-indigo-500", accent: "bg-purple-50" },
             { title: "Giải pháp tin học văn phòng", price: "100k - 200k", desc: "Cài đặt và cấu hình các công cụ quản lý, chữ ký số, phần mềm kế toán, máy in và mạng nội bộ. Hỗ trợ xử lý nhanh các lỗi hệ thống phát sinh.", icon: "briefcase", color: "from-emerald-600 to-teal-500", accent: "bg-emerald-50" },
             { title: "Khôi phục dữ liệu đã bị xoá", price: "100k - 300k", desc: "Khôi phục dữ liệu quan trọng từ HDD, SSD, USB hoặc thẻ nhớ bằng phần mềm chuyên dụng. Hỗ trợ xử lý các trường hợp xóa nhầm, format hoặc lỗi phân vùng, đảm bảo tính bảo mật và nguyên vẹn của thông tin.", icon: "hard-drive", color: "from-indigo-600 to-blue-500", accent: "bg-indigo-50" },
-            { title: "Sửa lỗi Driver máy in, Scan", price: "50k - 100k", desc: "Cấu hình kết nối máy in, máy Scan qua mạng WiFi/LAN tốc độ cao. Xử lý triệt để các lỗi xung đột Driver, kẹt lệnh in hoặc không nhận diện thiết bị, giúp quy trình làm việc của bạn luôn thông suốt.", icon: "printer", color: "from-emerald-600 to-teal-500", accent: "bg-emerald-50" },
+            { title: "Sửa lỗi Driver máy in, Scan", price: "50k - 100k", desc: "Cấu hình kết nối máy in, máy Scan qua mạng WiFi/LAN tốc độ cao. Xử lý triệt để các lỗi xung đột Driver, kẹt lệnh in hoặc không nhận diện thiết bị, giúp quy trình làm việc của bạn luôn thông suốt.", icon: "printer", price: "50k - 100k", icon: "printer", color: "from-emerald-600 to-teal-500", accent: "bg-emerald-50" },
             { title: "Phá mật khẩu Windows & file", price: "50k", desc: "Hỗ trợ mở khóa mật khẩu Windows (Local/Microsoft Account) nhanh chóng khi quên pass. Xử lý phá mật khẩu các định dạng file Office (Excel, Word), PDF mà không làm mất hay hư hỏng dữ liệu bên trong.", icon: "lock-keyhole", color: "from-amber-600 to-orange-500", accent: "bg-amber-50" },
             { title: "Sửa lỗi Mạng & Âm thanh", price: "50k", desc: "Xử lý triệt để các lỗi về âm thanh, mic và loa, đảm bảo chất lượng cho các buổi họp trực tuyến hoặc giải trí.", icon: "activity", color: "from-cyan-600 to-teal-500", accent: "bg-cyan-50" },
             { title: "Tư vấn nâng cấp linh kiện", price: "Miễn phí", desc: "Kiểm tra cấu hình chi tiết, tư vấn nâng cấp RAM, SSD giúp máy mạnh mẽ hơn.", icon: "cpu", color: "from-slate-600 to-slate-400", accent: "bg-slate-50" }
@@ -508,6 +781,7 @@
         const textToType = "SỬA CHỮA MÁY TÍNH ONLINE";
         let charIndex = 0; let isDeleting = false;
         function typeEffectLoop() {
+            if (!typingElement) return;
             const currentText = isDeleting ? textToType.substring(0, charIndex--) : textToType.substring(0, charIndex++);
             typingElement.textContent = currentText;
             let typeSpeed = isDeleting ? 40 : 80;
@@ -521,14 +795,14 @@
         services.forEach((item, idx) => {
             const iconContent = item.icon === 'windows11' ? win11SVG : `<i data-lucide="${item.icon}"></i>`;
             grid.innerHTML += `
-                <div onclick="contactZalo('${item.title}')" class="service-card hover-glass reveal flex flex-col glass-card rounded-[2.2rem] p-7 transition-all hover:shadow-2xl overflow-hidden relative opacity-0 translate-y-10 group cursor-pointer">
+                <div onclick="contactZalo()" class="service-card hover-glass reveal flex flex-col glass-card rounded-[2.2rem] p-7 transition-all hover:shadow-2xl overflow-hidden relative opacity-0 translate-y-10 group cursor-pointer">
                     <div class="spotlight"></div>
                     <div class="relative z-10 flex flex-col h-full text-center md:text-left">
                         <div class="mx-auto md:mx-0 soft-icon-box ${item.accent} shadow-sm transition-transform group-hover:rotate-12 border border-white/40">
-                            <div class="w-6 h-6 flex items-center justify-center ${item.icon === 'hard-drive' ? 'animate-float' : ''} text-blue-600">${iconContent}</div>
+                            <div class="w-6 h-6 flex items-center justify-center animate-float text-blue-600">${iconContent}</div>
                         </div>
                         <h4 class="text-base font-black tracking-tight mb-3 navy-text leading-tight group-hover:text-blue-600 transition-colors">${item.title}</h4>
-                        <p class="text-[11px] text-slate-500 leading-relaxed mb-8 flex-grow font-medium italic">${item.desc}</p>
+                        <p class="text-[13px] text-slate-500 leading-relaxed mb-8 flex-grow font-medium italic">${item.desc}</p>
                         <div class="mt-auto pt-6 border-t border-slate-100 flex flex-col items-center md:items-start gap-4">
                             <div class="bg-gradient-to-br ${item.color} px-5 py-2 rounded-full shadow-lg flex items-center justify-center w-full md:w-auto">
                                 <span class="price-font text-base text-white whitespace-nowrap drop-shadow-sm">${item.price}</span>
@@ -544,7 +818,9 @@
 
         document.addEventListener('mousemove', (e) => {
             const cursorLight = document.getElementById('cursor-light');
-            cursorLight.style.left = e.clientX + 'px'; cursorLight.style.top = e.clientY + 'px';
+            if (cursorLight) {
+                cursorLight.style.left = e.clientX + 'px'; cursorLight.style.top = e.clientY + 'px';
+            }
 
             document.querySelectorAll('.hover-glass, .service-card').forEach(card => {
                 const rect = card.getBoundingClientRect();
@@ -570,16 +846,54 @@
         toggle.onclick = () => { menu.style.opacity = '1'; menu.style.pointerEvents = 'all'; };
         close.onclick = () => { menu.style.opacity = '0'; menu.style.pointerEvents = 'none'; };
         document.querySelectorAll('.mobile-link').forEach(l => l.onclick = () => close.onclick());
+
+        // Mobile Articles Accordion Logic
+        const mobArtBtn = document.getElementById('mobile-articles-btn');
+        const mobArtSub = document.getElementById('mobile-articles-sub');
+        const mobArtIcon = document.getElementById('mobile-articles-icon');
+        
+        if (mobArtBtn) {
+            mobArtBtn.onclick = (e) => {
+                e.stopPropagation();
+                const isOpen = mobArtSub.style.maxHeight !== '0px' && mobArtSub.style.maxHeight !== '';
+                if (isOpen) {
+                    mobArtSub.style.maxHeight = '0px';
+                    mobArtSub.style.opacity = '0';
+                    mobArtIcon.style.transform = 'rotate(0deg)';
+                } else {
+                    mobArtSub.style.maxHeight = '300px';
+                    mobArtSub.style.opacity = '1';
+                    mobArtIcon.style.transform = 'rotate(180deg)';
+                }
+            };
+        }
+
+        // Scrollspy
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+            if (window.pageYOffset < 100) {
+                navLinks.forEach(nl => nl.classList.remove('active'));
+                document.querySelector('a[href="#home"]').classList.add('active');
+            }
+        });
     </script>
-    <!-- Hieu ung chuot -->
     <style>
-	html,body{cursor:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjac-SGqqBNOf8R-yQBGf8rXc_3Mko7Jk_Vf-3mtmVeE3EiU4oaRG-3lS1CqQ5XgWXpBspTaSriDXGF73L3m9V0c0K07iDq1r7XyLXpsEqU3VF2O6mT-gZkqsJimuxi8gLvOQtxhGXx8Y9a/s0/mouse-f1.png"), auto;}
-	a:hover{cursor:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjITCvg05WrPmBtw3wfCNDButQe1JVWYCtbJ07WNQ1Q_72Sf0PTOXRzt9H8OqryPkJrC7GmiHUJ0CwHje_VLV2Trr9cumn0Y6eMcFL77Z9fm4G4I3ZwLHu8I8kDUy9rkXjzH_v49SscqVYT/s0/mouse-f2.png"), auto;}
+        html,body{cursor:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjac-SGqqBNOf8R-yQBGf8rXc_3Mko7Jk_Vf-3mtmVeE3EiU4oaRG-3lS1CqQ5XgWXpBspTaSriDXGF73L3m9V0c0K07iDq1r7XyLXpsEqU3VF2O6mT-gZkqsJimuxi8gLvOQtxhGXx8Y9a/s0/mouse-f1.png"), auto;}
+        a:hover, button:hover{cursor:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjITCvg05WrPmBtw3wfCNDButQe1JVWYCtbJ07WNQ1Q_72Sf0PTOXRzt9H8OqryPkJrC7GmiHUJ0CwHje_VLV2Trr9cumn0Y6eMcFL77Z9fm4G4I3ZwLHu8I8kDUy9rkXjzH_v49SscqVYT/s0/mouse-f2.png"), auto;}
     </style>
-    <!-- Thu vien FB -->
-        <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-    lucide.createIcons();
-    </script>
 </body>
 </html>

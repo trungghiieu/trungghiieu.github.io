@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn tắt Fast Startup Windows - Trung Hiếu Computer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700;900&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root { font-size: 14px; }
+        @media (min-width: 768px) { :root { font-size: 15px; } }
+        @media (min-width: 1280px) { :root { font-size: 16px; } }
+
+        body { font-family: "Inter", sans-serif; background-color: #fcfdfe; color: #1e293b; }
+        .heading-font { font-family: "Montserrat", sans-serif; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+        }
+
+        .navy-text { color: #1e3a8a; }
+
+        /* Navigation Styles Synchronized */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            color: #475569;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link.active {
+            color: #2563eb !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #2563eb;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Dropdown Styles */
+        .dropdown { position: relative; }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 20px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 220px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.2, 1);
+            border-top: 4px solid #2563eb;
+            z-index: 50;
+        }
+
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent #2563eb transparent;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 20px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-item:last-child { border-bottom: none; }
+
+        .dropdown-item:hover {
+            background-color: #f8fafc;
+            color: #2563eb;
+            padding-left: 25px;
+        }
+
+        /* Article Typography */
+        .article-content h2 {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #1e3a8a;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            position: relative;
+            padding-left: 1.2rem;
+        }
+        .article-content h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10%;
+            height: 80%;
+            width: 4px;
+            background: #2563eb;
+            border-radius: 10px;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #334155;
+            margin-bottom: 1.2rem;
+        }
+        .article-content img {
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+            margin: 2rem auto 1rem auto;
+            width: 100%;
+            display: block;
+        }
+        .img-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 2.5rem;
+        }
+        .article-content blockquote {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+            padding: 2rem;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: #1e40af;
+            border-radius: 0 1.5rem 1.5rem 0;
+            margin: 2.5rem 0;
+        }
+
+        .step-badge {
+            background: #2563eb;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        /* --- Zalo Floating Button Synchronized --- */
+        .zalo-floating-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 150;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        
+        .zalo-floating-btn:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .zalo-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 15px rgba(37, 99, 235, 0.3));
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.7s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="selection:bg-blue-100 overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-[100] transition-all duration-500 py-3 px-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center bg-white/70 backdrop-blur-xl rounded-2xl px-5 py-2.5 border border-white/40 shadow-sm">
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3 group cursor-pointer" onclick="window.location.href='/index.html'">
+                <div class="bg-blue-600 p-1.5 rounded-xl shadow-md transition-transform group-hover:rotate-6">
+                    <i data-lucide="monitor" class="text-white w-4 h-4"></i>
+                </div>
+                <div>
+                    <div class="text-base font-bold text-slate-900 leading-none">Phạm Trung Hiếu</div>
+                    <div class="text-[12px] font-bold text-blue-600 mt-0.5 tracking-tighter">Kỹ thuật viên 5 năm kinh nghiệm</div>
+                </div>
+            </div>
+            
+            <!-- Links Container -->
+            <div id="nav-links-container" class="hidden lg:flex items-center space-x-8 font-bold text-[15px]">
+                <a href="/index.html#home" class="nav-link hover:text-blue-600 transition">TRANG CHỦ</a>
+                <a href="/index.html#services" class="nav-link hover:text-blue-600 transition">DỊCH VỤ</a>
+                <a href="/index.html#payment" class="nav-link hover:text-blue-600 transition">THANH TOÁN</a>
+                <a href="/index.html#advantages" class="nav-link hover:text-blue-600 transition">ƯU ĐIỂM</a>
+                <a href="/index.html#commit" class="nav-link hover:text-blue-600 transition">CAM KẾT</a>
+                
+                <div class="dropdown">
+                    <a href="/index.html#articles" class="nav-link active hover:text-blue-600 transition">
+                        BÀI VIẾT <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1.5 opacity-60"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">Hướng dẫn</a>
+                        <a href="#" class="dropdown-item">Thủ thuật</a>
+                        <a href="#" class="dropdown-item">Ghost Windows 11</a>
+                        <a href="/bai-viet/ultraview.html" class="dropdown-item">Hướng dẫn UltraViewer</a>
+                        <a href="/bai-viet/fast-startup.html" class="dropdown-item">Cách tắt Fast Startup</a>
+                        <a href="#" class="dropdown-item">Thủ thuật máy tính</a>
+                    </div>
+                </div>
+                <a href="/index.html#about" class="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold hover:bg-slate-900 transition-all text-[15px] uppercase tracking-wider shadow-lg shadow-blue-100">GIỚI THIỆU</a>
+            </div>
+
+            <button class="lg:hidden p-2 text-slate-900" id="menu-toggle">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[200] bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 transition-all duration-300 opacity-0 pointer-events-none overflow-y-auto py-20">
+        <button class="absolute top-6 right-6 p-2 text-slate-900" id="menu-close"><i data-lucide="x" class="w-8 h-8"></i></button>
+        <a href="/index.html#home" class="text-2xl font-bold mobile-link">TRANG CHỦ</a>
+        <a href="/index.html#services" class="text-2xl font-bold mobile-link">DỊCH VỤ</a>
+        <a href="/index.html#payment" class="text-2xl font-bold mobile-link">THANH TOÁN</a>
+        <a href="/index.html#advantages" class="text-2xl font-bold mobile-link">ƯU ĐIỂM</a>
+        <a href="/index.html#commit" class="text-2xl font-bold mobile-link">CAM KẾT</a>
+        
+        <div class="flex flex-col items-center w-full">
+            <button id="mobile-articles-btn" class="text-2xl font-bold flex items-center justify-center gap-2 focus:outline-none w-full">
+                <span class="w-6 hidden sm:inline-block"></span> 
+                BÀI VIẾT 
+                <i data-lucide="chevron-down" id="mobile-articles-icon" class="w-6 h-6 transition-transform duration-300"></i>
+            </button>
+            <div id="mobile-articles-sub" class="flex flex-col items-center space-y-4 overflow-hidden max-h-0 transition-all duration-300 opacity-0">
+                <a href="#" class="text-lg font-bold mobile-link opacity-70">• Ghost Windows</a>
+                <a href="#" class="text-lg font-bold mobile-link opacity-70">• Phần mềm</a>
+                <a href="/bai-viet/ultraview.html" class="text-lg font-bold mobile-link opacity-70">• Hướng dẫn UltraViewer</a>
+                <a href="/bai-viet/fast-startup.html" class="text-lg font-bold mobile-link opacity-70">• Tắt Fast Startup</a>
+            </div>
+        </div>
+
+        <a href="/index.html#about" class="text-2xl font-bold mobile-link">GIỚI THIỆU</a>
+    </div>
+
+    <!-- Content Area -->
+    <div class="max-w-6xl mx-auto px-5 pt-32 pb-24">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+            
+            <!-- SIDEBAR -->
+            <aside class="hidden lg:block lg:col-span-4 order-1">
+                <div class="sidebar-sticky space-y-6">
+                    <div class="glass-card p-8 rounded-[2.5rem] border-slate-100 text-center relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-full h-1.5 bg-blue-600"></div>
+                        <div class="w-20 h-20 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-2xl mx-auto mb-4 border-4 border-white shadow-lg group-hover:scale-110 transition-transform">
+                            PH
+                        </div>
+                        <h4 class="font-black text-slate-900 text-lg">Phạm Trung Hiếu</h4>
+                        <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-4">Kỹ thuật viên</p>
+                        <p class="text-[13px] text-slate-500 leading-relaxed mb-6">Chuyên xử lý các lỗi hệ thống Windows và tối ưu hóa máy tính chuyên nghiệp từ xa.</p>
+                        <button onclick="window.open('https://zalo.me/0914384739')" class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-md">Nhắn tin Zalo</button>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-[2rem] border-slate-100">
+                        <h4 class="font-black text-slate-900 text-[12px] uppercase tracking-[0.2em] mb-4 flex items-center">
+                            <i data-lucide="zap" class="w-4 h-4 mr-2 text-blue-600"></i> Hỗ trợ nhanh
+                        </h4>
+                        <div class="space-y-2 text-xs font-bold text-slate-600">
+                            <div class="p-3 bg-blue-50 rounded-xl flex items-center">
+                                <i data-lucide="phone" class="w-3.5 h-3.5 mr-3 text-blue-600"></i>
+                                0914.384.739
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl flex items-center">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 mr-3 text-slate-400"></i>
+                                Online: 24/7
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- MAIN ARTICLE -->
+            <main class="lg:col-span-8 order-2">
+                <header class="mb-2 reveal active">
+                    <div class="flex items-center space-x-2 text-blue-600 font-black text-[12px] uppercase tracking-widest mb-4">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        <span>Tối ưu hệ thống</span>
+                    </div>
+                    <h1 class="heading-font text-3xl md:text-3xl font-black navy-text leading-[1.2] mb-6">
+                        Nguyên nhân khiến máy tính bị hao pin và không được shutdown hoàn toàn
+                    </h1>
+                    <div class="flex flex-wrap items-center gap-6 text-slate-400 font-bold text-[12px] uppercase tracking-widest border-b border-slate-100 pb-4">
+                        <span class="flex items-center"><i data-lucide="calendar" class="w-4 h-4 mr-2 text-blue-500"></i>26/04/2026</span>
+                        <span class="flex items-center"><i data-lucide="user" class="w-4 h-4 mr-2 text-blue-500"></i>Phạm Trung Hiếu</span>
+                        <span class="flex items-center text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4 mr-2"></i> Đã kiểm chứng</span>
+                    </div>
+                </header>
+
+                <article class="article-content reveal">
+                    <p class="text-lg font-medium text-slate-600 leading-relaxed mb-4">
+                        Fast Startup (Khởi động nhanh) là tính năng mặc định có từ Windows 8 trở lên. Về lý thuyết, nó giúp máy tính của bạn rút ngắn thời gian khởi động. Tuy nhiên, cái giá phải trả đôi khi lại lớn hơn sự tiện lợi mà nó mang lại.
+                    </p>
+
+                    <div class="bg-red-50 border-2 border-red-100 p-8 rounded-[2rem] my-10 shadow-sm">
+                        <h3 class="font-black text-red-600 text-lg flex items-center gap-3 mb-4">
+                            <i data-lucide="alert-circle" class="w-6 h-6"></i> Tại sao Fast Startup lại gây hại?
+                        </h3>
+                        <p class="text-slate-700 mb-6">Dù giúp máy khởi động nhanh, nhưng Fast Startup lại đang trực tiếp bào mòn tuổi thọ chiếc Laptop của bạn:</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-white rounded-2xl border border-red-50">
+                                <span class="block text-red-600 font-bold text-sm mb-1 uppercase tracking-tight">Linh kiện "lão hóa" sớm</span>
+                                <span class="text-xs text-slate-500 leading-relaxed">Thay vì tắt hoàn toàn, Windows sẽ lưu trạng thái hệ thống vào ổ cứng khiến Laptop hoạt động liên tục mà không được nghỉ ngơi.</span>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl border border-red-50">
+                                <span class="block text-red-600 font-bold text-sm mb-1 uppercase tracking-tight">Xung đột Driver</span>
+                                <span class="text-xs text-slate-500 leading-relaxed">Nguyên nhân hàng đầu khiến máy không nhận USB, mất âm thanh hoặc lỗi Wi-Fi sau khi mở máy lại.</span>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl border border-red-50">
+                                <span class="block text-red-600 font-bold text-sm mb-1 uppercase tracking-tight">Lỗi "Tự bật"</span>
+                                <span class="text-xs text-slate-500 leading-relaxed">Fast Startup chính là "thủ phạm" phổ biến nhất khi bạn vừa mở màn hình thì máy tự khởi động lên.</span>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl border border-red-50">
+                                <span class="block text-red-600 font-bold text-sm mb-1 uppercase tracking-tight">Hao pin thầm lặng</span>
+                                <span class="text-xs text-slate-500 leading-relaxed">Pin Laptop vẫn sụt giảm đáng kể ngay cả khi đã tắt do máy duy trì một phần trạng thái để khởi động nhanh.</span>
+                            </div>
+                        </div>
+
+                        <div class="my-6">
+                            <img src="/bai-viet/fast-startup/task-manager.jpg" alt="Laptop hoạt động liên tục 26 ngày do không shutdown đúng cách">
+                            <p class="img-caption">Laptop này đã sử dụng trong 26 ngày liên tục mà không được tắt hoàn toàn</p>
+                        </div>                        
+                    </div>
+
+                    <blockquote>
+                        Việc tắt Fast Startup sẽ giúp máy tính thực hiện một chu kỳ khởi động sạch (Clean Boot), giúp hệ thống hoạt động ổn định và bền bỉ hơn.
+                    </blockquote>
+
+                    <h2>Bước 1: Truy cập Control Panel</h2>
+                    <p>Nhấn phím <span class="font-bold">Windows</span>, gõ từ khóa <code class="bg-slate-100 px-2 py-0.5 rounded font-mono text-blue-600">Control Panel</code> và nhấn Enter để mở bảng điều khiển.</p>
+                    
+                    <div class="my-8">
+                        <img src="/bai-viet/fast-startup/search.png" alt="Mở Control Panel">
+                        <p class="img-caption">Tìm và mở ứng dụng Control Panel hệ thống</p>
+                    </div>
+
+                    <h2>Bước 2: Mở cài đặt Power Options</h2>
+                    <p>Trong Control Panel, hãy chọn mục <span class="font-bold">Hardware and Sound</span>, sau đó click vào <span class="font-bold">Power Options</span>.</p>
+                    <p class="text-slate-700">Tại menu bên trái, hãy nhấp vào dòng <span class="text-blue-600 font-bold">Choose what the power buttons do</span> (Chọn chức năng cho các nút nguồn).</p>
+
+                    <img src="/bai-viet/fast-startup/power-button.png" alt="Cài đặt Power Buttons">
+                    <p class="img-caption">Chọn thiết lập cho hành vi của nút nguồn</p>
+
+                    <h2>Bước 3: Mở quyền chỉnh sửa hệ thống</h2>
+                    <p>Mặc định các tùy chọn quan trọng sẽ bị khóa. Bạn cần nhấp vào dòng chữ màu xanh có biểu tượng khiên:</p>
+                    <p class="p-4 bg-yellow-50 border-2 border-yellow-100 rounded-2xl font-bold text-yellow-800 text-center italic">
+                        "Change settings that are currently unavailable"
+                    </p>
+                    <img src="/bai-viet/fast-startup/change-settings.png" alt="Bỏ chọn Fast Startup">
+                    <p class="img-caption">Bỏ chọn để tắt tính năng khởi động nhanh</p>
+
+                    <h2>Bước 4: Tắt Fast Startup</h2>
+                    <p>Bây giờ, hãy chú ý đến phần <span class="font-bold">Shutdown settings</span> và thực hiện hành động sau:</p>
+
+                    <ul class="list-none space-y-4 my-8">
+                        <li class="p-4 bg-white border-2 border-red-100 rounded-2xl flex items-center gap-4 shadow-sm">
+                            <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white"><i data-lucide="x-circle" class="w-5 h-5"></i></div>
+                            <div>
+                                <span class="block text-xs font-bold text-slate-400 uppercase">Hành động quan trọng</span>
+                                <span class="font-black text-slate-900 text-lg">Bỏ tích ô "Turn on fast startup (recommended)"</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <img src="/bai-viet/fast-startup/turn-off.png" alt="Bỏ chọn Fast Startup">
+                    <p class="img-caption">Bỏ chọn để tắt tính năng khởi động nhanh</p>
+
+                    <h2>Bước 5: Lưu và khởi động lại</h2>
+                    <p>Nhấn nút <span class="font-bold">Save changes</span> để áp dụng. Cuối cùng, hãy Restart máy tính để các thay đổi có hiệu lực hoàn toàn.</p>
+                    <img src="/bai-viet/fast-startup/save-changes.png" alt="Bỏ chọn Fast Startup">
+                    <p class="img-caption">Lưu lại những thay đổi</p>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-2xl my-10">
+                        <h4 class="text-blue-800 font-black text-sm uppercase mb-3 flex items-center">
+                            <i data-lucide="lightbulb" class="w-4 h-4 mr-2"></i> Lợi ích sau khi tắt
+                        </h4>
+                        <ul class="text-blue-900/70 text-sm space-y-2 font-medium">
+                            <li>• Khắc phục lỗi laptop tự bật đèn bàn phím khi đã tắt.</li>
+                            <li>• Sửa lỗi không vào được BIOS khi khởi động máy.</li>
+                            <li>• Giúp hệ thống cập nhật các thay đổi phần cứng tốt hơn.</li>
+                            <li>• Giải quyết triệt để tình trạng máy tính bị treo ở màn hình Shutdown.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <div class="lg:hidden mt-20 pt-10 border-t border-slate-100 text-center">
+                    <div class="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xl mx-auto mb-4">PH</div>
+                    <p class="font-black text-slate-900 text-sm">Phạm Trung Hiếu</p>
+                    <p class="text-[9px] text-blue-600 font-bold uppercase">Hỗ trợ máy tính 24/7</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#0f172a] text-white pt-16 pb-24 px-5">
+        <div class="max-w-6xl mx-auto text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-8">
+            <div>
+                <div class="flex items-center justify-center md:justify-start space-x-3 mb-4">
+                    <div class="bg-blue-600 p-2 rounded-xl"><i data-lucide="monitor" class="w-5 h-5 text-white"></i></div>
+                    <span class="text-xl font-black text-white">Trung Hieu Computer</span>
+                </div>
+                <p class="text-slate-400 text-[15px] italic">Chuyên cài đặt Windows, phần mềm & sửa lỗi máy tính từ xa uy tín toàn quốc.</p>
+            </div>
+            <div class="flex gap-5">
+                <a href="https://www.facebook.com/100004120061594" target="_blank" rel="noopener noreferrer" 
+                class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-[#1877F2] transition-all shadow-lg text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
+                <a href="https://zalo.me/0914384739" target="_blank" rel="noopener noreferrer" 
+                class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-blue-500 transition-all shadow-lg text-white">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </a>
+                <a href="tel:0914384739" 
+                class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-green-600 transition-all shadow-lg text-white">
+                    <i data-lucide="phone" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto pt-10 mt-10 border-t border-slate-800/50 text-center text-[12px] font-bold text-slate-500 tracking-widest uppercase">
+            © 2026 - Bản quyền thuộc về TRUNG HIEU COMPUTER
+        </div>
+    </footer>
+
+    <!-- Zalo Floating Button -->
+    <div onclick="contactZalo()" class="zalo-floating-btn group">
+        <img src="/img/Icon_of_Zalo.png" alt="Zalo Contact" class="zalo-icon-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg'">
+        <div class="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-20 -z-10 scale-150"></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) { 
+                nav.classList.add('py-2'); 
+                nav.querySelector('.max-w-6xl').classList.add('bg-white/90', 'shadow-xl'); 
+            } else { 
+                nav.classList.remove('py-2'); 
+                nav.querySelector('.max-w-6xl').classList.remove('bg-white/90', 'shadow-xl'); 
+            }
+        });
+
+        function contactZalo() {
+            window.open('https://zalo.me/0914384739', '_blank');
+        }
+
+        // Mobile Menu Logic
+        const toggle = document.getElementById('menu-toggle');
+        const close = document.getElementById('menu-close');
+        const menu = document.getElementById('mobile-menu');
+        
+        toggle.onclick = () => { menu.style.opacity = '1'; menu.style.pointerEvents = 'all'; };
+        close.onclick = () => { menu.style.opacity = '0'; menu.style.pointerEvents = 'none'; };
+        
+        // Mobile Articles Accordion
+        const mobArtBtn = document.getElementById('mobile-articles-btn');
+        const mobArtSub = document.getElementById('mobile-articles-sub');
+        const mobArtIcon = document.getElementById('mobile-articles-icon');
+        
+        if (mobArtBtn) {
+            let isTransitioning = false;
+            mobArtBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (isTransitioning) return;
+                
+                const isOpen = mobArtSub.getAttribute('data-open') === 'true';
+                isTransitioning = true;
+
+                if (isOpen) {
+                    mobArtSub.style.maxHeight = '0px';
+                    mobArtSub.style.opacity = '0';
+                    mobArtSub.style.marginTop = '0px';
+                    mobArtIcon.style.transform = 'rotate(0deg)';
+                    mobArtSub.setAttribute('data-open', 'false');
+                } else {
+                    mobArtSub.style.maxHeight = '300px';
+                    mobArtSub.style.opacity = '1';
+                    mobArtSub.style.marginTop = '1.5rem';
+                    mobArtIcon.style.transform = 'rotate(180deg)';
+                    mobArtSub.setAttribute('data-open', 'true');
+                }
+                
+                setTimeout(() => { isTransitioning = false; }, 300);
+            };
+        }
+    </script>
+    <style>
+	html,body{cursor:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjac-SGqqBNOf8R-yQBGf8rXc_3Mko7Jk_Vf-3mtmVeE3EiU4oaRG-3lS1CqQ5XgWXpBspTaSriDXGF73L3m9V0c0K07iDq1r7XyLXpsEqU3VF2O6mT-gZkqsJimuxi8gLvOQtxhGXx8Y9a/s0/mouse-f1.png"), auto;}
+	a:hover, button:hover{cursor:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjITCvg05WrPmBtw3wfCNDButQe1JVWYCtbJ07WNQ1Q_72Sf0PTOXRzt9H8OqryPkJrC7GmiHUJ0CwHje_VLV2Trr9cumn0Y6eMcFL77Z9fm4G4I3ZwLHu8I8kDUy9rkXjzH_v49SscqVYT/s0/mouse-f2.png"), auto;}
+    </style>
+</body>
+</html>
